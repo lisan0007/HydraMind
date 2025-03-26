@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Scramble Animation</title>
+  <style>
+    body {
+      display: grid;
+      place-items: center;
+      height: 100vh;
+      background-color: black;
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Space Mono', monospace;
+    }
+
+    h1, p {
+      color: white;
+      text-align: center;
+      padding: 0 clamp(1rem, 2vw, 3rem);
+    }
+
+    h1 {
+      font-size: clamp(2rem, 8vw, 6rem);
+      margin: 0;
+    }
+
+    p {
+      font-size: clamp(1rem, 4vw, 2rem);
+      margin: 1rem 0 0;
+    }
+
+    h1:hover, p:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1 data-values='["LISAN SARKAR", "QA Specialist"]'>L!SAN SARKAR</h1>
+  <p data-values='["WHERE CREATIVITY MEETS PERFORMANCE", "INNOVATIVE WEB DESIGN"]'>WHERE CREATIVITY MEETS PERFORMANCE</p>
+
+  <script>
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ*; <>#";
+    const elements = document.querySelectorAll("[data-values]");
+    
+    elements.forEach(element => {
+      const values = JSON.parse(element.dataset.values);
+      let currentIndex = 0;
+      let interval = null;
+
+      function animateText(targetText) {
+        let iteration = 0;
+        clearInterval(interval);
+
+        interval = setInterval(() => {
+          element.innerText = targetText
+            .split("")
+            .map((letter, index) => {
+              if (index < iteration) {
+                return targetText[index];
+              }
+              return characters[Math.floor(Math.random() * characters.length)];
+            })
+            .join("");
+
+          if (iteration >= targetText.length) {
+            clearInterval(interval);
+          }
+          iteration += 1 / 3;
+        }, 50); // Animation speed (50ms per frame)
+      }
+
+      function cycleText() {
+        setInterval(() => {
+          currentIndex = (currentIndex + 1) % values.length;
+          animateText(values[currentIndex]);
+        }, 5000); // Switch every 5 seconds
+      }
+
+      // Start with initial text
+      animateText(values[0]);
+      // Start cycling
+      cycleText();
+    });
+  </script>
+</body>
+</html>
